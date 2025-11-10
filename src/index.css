@@ -1,1 +1,112 @@
 @import "tailwindcss";
+
+@layer base {
+
+    /* light */
+    @font-face {
+        font-family: 'expo_arabic';
+        src: url('/fonts/expo_arabic_light.ttf') format('opentype');
+        font-weight: 300;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    /* Regular */
+    @font-face {
+        font-family: 'expo_arabic';
+        src: url('/fonts/expo_arabic_book.ttf') format('truetype');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    /* Medium */
+    @font-face {
+        font-family: 'expo_arabic';
+        src: url('/fonts/expo_arabic_medium.ttf') format('truetype');
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    /* Bold */
+    @font-face {
+        font-family: 'expo_arabic';
+        src: url('/fonts/expo_arabic_bold.ttf') format('truetype');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+    }
+}
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+    /* Primary (Blue) */
+    --color-primary-50: #f0f8ff;
+    --color-primary-100: #dfefff;
+    --color-primary-200: #b9dffe;
+    --color-primary-300: #7bc7fe;
+    --color-primary-400: #34aafc;
+    --color-primary-500: #0a91ed;
+    --color-primary-600: #0071cb;
+    --color-primary-700: #00579f;
+    --color-primary-800: #054d87;
+    --color-primary-900: #0a4070;
+    --color-primary-950: #07284a;
+
+    /* Gray */
+    --color-gray-50: #f6f7f9;
+    --color-gray-100: #ebeeef;
+    --color-gray-200: #d3dbe4;
+    --color-gray-300: #adbcce;
+    --color-gray-400: #8198af;
+    --color-gray-500: #627d98;
+    --color-gray-600: #4d637c;
+    --color-gray-700: #3f5165;
+    --color-gray-800: #374555;
+    --color-gray-900: #313b49;
+    --color-gray-950: #212730;
+
+    /* Green */
+    --color-green-50: #ecfdf7;
+    --color-green-100: #d1faea;
+    --color-green-200: #a7f3da;
+    --color-green-300: #6ee7c7;
+    --color-green-400: #2dcca7;
+    --color-green-500: #11b897;
+    --color-green-600: #06957c;
+    --color-green-700: #047866;
+    --color-green-800: #065f52;
+    --color-green-900: #064e45;
+    --color-green-950: #022c28;
+
+    /* Red */
+    --color-red-50: #fdf3f3;
+    --color-red-100: #fbe5e5;
+    --color-red-200: #f8d0d0;
+    --color-red-300: #f1b0b0;
+    --color-red-400: #e88181;
+    --color-red-500: #d64545;
+    --color-red-600: #c63c3c;
+    --color-red-700: #a62f2f;
+    --color-red-800: #8a2a2a;
+    --color-red-900: #732929;
+    --color-red-950: #3e1111;
+
+    /* Yellow */
+    --color-yellow-50: #fefaec;
+    --color-yellow-100: #fcefc9;
+    --color-yellow-200: #f9dd8e;
+    --color-yellow-300: #f7d070;
+    --color-yellow-400: #f3b02c;
+    --color-yellow-500: #ec9014;
+    --color-yellow-600: #d16b0e;
+    --color-yellow-700: #ae4b0f;
+    --color-yellow-800: #8d3a13;
+    --color-yellow-900: #743113;
+    --color-yellow-950: #431805;
+
+    /* font */
+    --font-expoArabic: 'expo_arabic', sans-serif;
+}
