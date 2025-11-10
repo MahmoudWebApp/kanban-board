@@ -1,7 +1,8 @@
 import "./App.css";
+import Board from "./components/Board";
 
 function App() {
-  return <h1 className="text-3xl font-bold underline"> Hello world! </h1>;
+  return <Board />;
 }
 
 export default App;
