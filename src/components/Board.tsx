@@ -9,85 +9,62 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import type {
-  DragStartEvent,
-  DragOverEvent,
-  DragEndEvent,
-} from "@dnd-kit/core";
+import type { DragStartEvent, DragOverEvent, DragEndEvent } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
-import type { IKanbanData } from "../types";
+import { useKanbanContext } from "../context/KanbanContext";
 
-interface IProps {
-  data: IKanbanData;
-  addCard: (columnId: string, title: string, content: string) => void;
-  editCard: (cardId: string, title: string, content: string) => void;
-  deleteCard: (cardId: string) => void;
-  moveCard: (
-    cardId: string,
-    fromColumn: string,
-    toColumn: string,
-    newIndex: number
-  ) => void;
-  reorderCards: (columnId: string, cardIds: string[]) => void;
-  deleteColumn: (columnId: string) => void;
-  editColumn: (columnId: string, title: string) => void;
-}
-
-const Board: React.FC<IProps> = ({
-  data,
-  addCard,
-  editCard,
-  deleteCard,
-  moveCard,
-  reorderCards,
-  deleteColumn,
-  editColumn,
-}) => {
+const Board: React.FC = () => {
+  const { data, moveCard, reorderCards } = useKanbanContext();
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
   );
 
-  const handleDragStart = ({ active }: DragStartEvent) =>
-    setActiveId(active.id as string);
+  const handleDragStart = ({ active }: DragStartEvent) => {
+    setActiveId(String(active.id));
+  };
 
   const handleDragOver = ({ active, over }: DragOverEvent) => {
     if (!over || !active.id) return;
-    const activeCard = data.cards[active.id as string];
+
+    const activeId = String(active.id);
+    const overId = String(over.id);
+
+    const activeCard = data.cards[activeId];
     if (!activeCard) return;
 
     const activeColumn = activeCard.status;
-    const overId = over.id;
-
-    const isOverColumn = !data.cards[overId as string];
-    const overColumn = isOverColumn
-      ? (overId as string)
-      : data.cards[overId as string]?.status;
+    const isOverColumn = !data.cards[overId];
+    const overColumn = isOverColumn ? overId : data.cards[overId]?.status;
 
     if (!overColumn || activeColumn === overColumn) return;
-
     const overColumnData = data.columns[overColumn];
     if (!overColumnData) return;
 
     const overIndex = isOverColumn
       ? overColumnData.cardIds.length
-      : overColumnData.cardIds.indexOf(overId as string);
+      : overColumnData.cardIds.indexOf(overId);
 
-    moveCard(active.id as string, activeColumn, overColumn, overIndex);
+    moveCard(activeId, activeColumn, overColumn, overIndex);
   };
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     setActiveId(null);
     if (!over || !active.id) return;
 
-    const activeCard = data.cards[active.id as string];
+    const activeId = String(active.id);
+    const overId = String(over.id);
+
+    const activeCard = data.cards[activeId];
     if (!activeCard) return;
 
     const column = data.columns[activeCard.status];
-    const oldIndex = column.cardIds.indexOf(active.id as string);
-    const newIndex = column.cardIds.indexOf(over.id as string);
+    const oldIndex = column.cardIds.indexOf(activeId);
+    const newIndex = column.cardIds.indexOf(overId);
 
     if (oldIndex !== newIndex && newIndex !== -1) {
       reorderCards(column.id, arrayMove(column.cardIds, oldIndex, newIndex));
@@ -107,16 +84,7 @@ const Board: React.FC<IProps> = ({
       >
         <div className="flex gap-4 flex-wrap pb-4">
           {data.columnOrder.map((id) => (
-            <Column
-              key={id}
-              column={data.columns[id]}
-              cards={data.cards}
-              onAddCard={addCard}
-              onEditCard={editCard}
-              onDeleteCard={deleteCard}
-              onDeleteColumn={deleteColumn}
-              onEditColumn={editColumn}
-            />
+            <Column key={id} column={data.columns[id]} />
           ))}
         </div>
         <DragOverlay>

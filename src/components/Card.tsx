@@ -1,24 +1,30 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useKanbanContext } from "../context/KanbanContext";
 
 interface IProps {
   id: string;
-  title: string;
-  content: string;
-  onDelete: (id: string) => void;
-  onEdit: (id: string, title: string, content: string) => void;
 }
 
-const Card: React.FC<IProps> = ({ id, title, content, onDelete, onEdit }) => {
+const Card: React.FC<IProps> = ({ id }) => {
+  const { data, editCard, deleteCard } = useKanbanContext();
+  const card = data.cards[id];
+  if (!card) return null;
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [editTitle, setEditTitle] = useState(title);
-  const [editContent, setEditContent] = useState(content);
+  const [editTitle, setEditTitle] = useState(card.title);
+  const [editContent, setEditContent] = useState(card.content);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
-  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 };
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -32,14 +38,18 @@ const Card: React.FC<IProps> = ({ id, title, content, onDelete, onEdit }) => {
 
   const handleSave = () => {
     if (editTitle.trim() && editContent.trim()) {
-      onEdit(id, editTitle, editContent);
+      editCard(id, editTitle, editContent);
       setEditMode(false);
     }
   };
 
   if (editMode) {
     return (
-      <div ref={setNodeRef} style={style} className="p-3 bg-white dark:bg-gray-700 rounded-lg border border-gray-100 mb-2">
+      <div
+        ref={setNodeRef}
+        style={style}
+        className="p-3 bg-white dark:bg-gray-700 rounded-lg border border-gray-100 mb-2"
+      >
         <input
           value={editTitle}
           onChange={(e) => setEditTitle(e.target.value)}
@@ -63,8 +73,8 @@ const Card: React.FC<IProps> = ({ id, title, content, onDelete, onEdit }) => {
           <button
             onClick={() => {
               setEditMode(false);
-              setEditTitle(title);
-              setEditContent(content);
+              setEditTitle(card.title);
+              setEditContent(card.content);
             }}
             className="px-3 py-1 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-white text-sm rounded hover:bg-gray-400"
           >
@@ -76,11 +86,19 @@ const Card: React.FC<IProps> = ({ id, title, content, onDelete, onEdit }) => {
   }
 
   return (
-    <div ref={setNodeRef} style={style} className="p-3 bg-white dark:bg-gray-700 rounded-lg border border-gray-100 mb-2 relative">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="p-3 bg-white dark:bg-gray-700 rounded-lg border border-gray-100 mb-2 relative"
+    >
       <div className="flex justify-between items-start">
         <div className="flex-1 cursor-move" {...attributes} {...listeners}>
-          <h3 className="font-medium text-sm dark:text-white text-gray-800 mb-2">{title}</h3>
-          <p className="text-sm text-gray-400 dark:text-gray-200 font-normal">{content}</p>
+          <h3 className="font-medium text-sm dark:text-white text-gray-800 mb-2">
+            {card.title}
+          </h3>
+          <p className="text-sm text-gray-400 dark:text-gray-200 font-normal">
+            {card.content}
+          </p>
         </div>
 
         <div className="relative" ref={menuRef}>
@@ -108,7 +126,7 @@ const Card: React.FC<IProps> = ({ id, title, content, onDelete, onEdit }) => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  onDelete(id);
+                  deleteCard(id);
                   setMenuOpen(false);
                 }}
                 className="w-full text-right px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-b-lg"
