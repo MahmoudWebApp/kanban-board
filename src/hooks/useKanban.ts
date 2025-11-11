@@ -1,6 +1,6 @@
+
 import { useState, useEffect } from "react";
 import type { IKanbanData } from "../types";
-
 
 const initialData: IKanbanData = {
   cards: {
@@ -8,7 +8,6 @@ const initialData: IKanbanData = {
   },
   columns: {
     todo: { id: "todo", title: "قائمة المهام", cardIds: ["card-1"] },
-
   },
   columnOrder: ["todo"],
 };
@@ -70,6 +69,7 @@ export const useKanban = () => {
   const reorderCards = (columnId: string, cardIds: string[]) => {
     setData(prev => ({ ...prev, columns: { ...prev.columns, [columnId]: { ...prev.columns[columnId], cardIds } } }));
   };
+
   const addColumn = (title: string) => {
     if (!title.trim()) return;
     const newId = `column-${Date.now()}`;
@@ -82,6 +82,7 @@ export const useKanban = () => {
       columnOrder: [...prev.columnOrder, newId]
     }));
   };
+
   const deleteColumn = (columnId: string) => {
     if (data.columns[columnId]?.cardIds.length > 0) {
       alert("لا يمكن حذف عمود يحتوي على مهام. احذف المهام أولاً.");
@@ -107,6 +108,6 @@ export const useKanban = () => {
       }
     }));
   };
-  return { data, addCard, editCard, deleteCard, moveCard, reorderCards, addColumn, deleteColumn, editColumn };
 
+  return { data, addCard, editCard, deleteCard, moveCard, reorderCards, addColumn, deleteColumn, editColumn };
 };

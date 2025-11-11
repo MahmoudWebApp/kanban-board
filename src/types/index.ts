@@ -1,3 +1,4 @@
+
 export interface ICard {
   id: string;
   title: string;
@@ -11,8 +12,8 @@ export interface IColumn {
   cardIds: string[];
 }
 
-export type IKanbanData = {
+export interface IKanbanData {
   cards: Record<string, ICard>;
   columns: Record<string, IColumn>;
   columnOrder: string[];
-};
+}
