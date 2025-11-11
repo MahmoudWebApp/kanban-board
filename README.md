@@ -29,7 +29,7 @@ Built with **React 18+**, **TypeScript**, and **Vite**, using **`@dnd-kit`** for
 
 1. **Clone the repo**
    ```bash
-   git clone https://github.com/your-username/kanban-board.git
+   git clone https://github.com/MahmoudWebApp/kanban-board.git
    cd kanban-board
 
 npm install
