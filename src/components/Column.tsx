@@ -8,7 +8,7 @@ import type { ICard, IColumn } from "../types";
 import Card from "./Card";
 import * as XLSX from "xlsx";
 
-interface Props {
+interface IProps {
   column: IColumn;
   cards: Record<string, ICard>;
   onAddCard: (columnId: string, title: string, content: string) => void;
@@ -18,7 +18,7 @@ interface Props {
   onEditColumn?: (columnId: string, title: string) => void;
 }
 
-const Column: React.FC<Props> = ({
+const Column: React.FC<IProps> = ({
   column,
   cards,
   onAddCard,
@@ -32,12 +32,6 @@ const Column: React.FC<Props> = ({
   const [newContent, setNewContent] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [editTitle, setEditTitle] = useState(column.title);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  const { setNodeRef: setDroppableRef, isOver } = useDroppable({ id: column.id });
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -223,7 +217,7 @@ const Column: React.FC<Props> = ({
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="🔍 بحث..."
+                    placeholder=" بحث..."
                     className="w-full px-2 py-1 text-xs border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
                     onClick={(e) => e.stopPropagation()} 
                   />
@@ -247,7 +241,7 @@ const Column: React.FC<Props> = ({
                     handleExportToExcel();
                     setMenuOpen(false);
                   }}
-                  className="w-full text-right px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-70"
+                  className="w-full text-right px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   تصدير Excel
                 </button>
