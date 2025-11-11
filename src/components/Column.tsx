@@ -10,7 +10,7 @@ interface IProps {
 }
 
 const Column: React.FC<IProps> = ({ column }) => {
-  const { data, addCard, editCard, deleteCard, editColumn, deleteColumn } =
+  const { data, addCard, editColumn, deleteColumn } =
     useKanbanContext();
 
   const [showAddForm, setShowAddForm] = useState(false);
