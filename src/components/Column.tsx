@@ -49,6 +49,23 @@ const Column: React.FC<Props> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editTitle, setEditTitle] = useState(column.title);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const { setNodeRef: setDroppableRef, isOver } = useDroppable({ id: column.id });
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleAdd = () => {
     if (newTitle.trim() && newContent.trim()) {
       onAddCard(column.id, newTitle, newContent);
@@ -289,10 +306,7 @@ const Column: React.FC<Props> = ({
             rows={2}
           />
           <div className="flex gap-2">
-            <button
-              onClick={handleAdd}
-              className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
-            >
+            <button onClick={handleAdd} className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
               إضافة
             </button>
             <button
