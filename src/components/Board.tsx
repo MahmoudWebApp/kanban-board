@@ -98,7 +98,7 @@ const Board: React.FC<BoardProps> = ({
   const activeCard = activeId ? data.cards[activeId] : null;
 
   return (
-    <div className="flex  gap-4 pb-4 min-w-full">
+    <div className="flex gap-4 pb-4 min-w-full">
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
@@ -106,7 +106,7 @@ const Board: React.FC<BoardProps> = ({
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex gap-4  flex-wrap pb-4">
+        <div className="flex gap-4 flex-wrap pb-4">
           {data.columnOrder.map((id) => (
             <Column
               key={id}

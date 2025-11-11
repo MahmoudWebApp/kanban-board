@@ -6,6 +6,7 @@ import {
 import { useDroppable } from "@dnd-kit/core";
 import type { ICard, IColumn } from "../types";
 import Card from "./Card";
+import * as XLSX from "xlsx";
 
 interface Props {
   column: IColumn;
@@ -13,8 +14,8 @@ interface Props {
   onAddCard: (columnId: string, title: string, content: string) => void;
   onDeleteCard: (cardId: string) => void;
   onEditCard: (cardId: string, title: string, content: string) => void;
-  onDeleteColumn?: (columnId: string) => void; 
-  onEditColumn?: (columnId: string, title: string) => void; 
+  onDeleteColumn?: (columnId: string) => void;
+  onEditColumn?: (columnId: string, title: string) => void;
 }
 
 const Column: React.FC<Props> = ({
@@ -29,6 +30,7 @@ const Column: React.FC<Props> = ({
   const [showAddForm, setShowAddForm] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -63,6 +65,30 @@ const Column: React.FC<Props> = ({
     }
   };
 
+  const handleExportToExcel = () => {
+    const columnCards = column.cardIds.map((id,index) => ({
+      '#': index +1 ,
+      العنوان: cards[id]?.title || "",
+      الوصف: cards[id]?.content || "",
+   
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(columnCards);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, column.title);
+    XLSX.writeFile(wb, `${column.title}.xlsx`);
+  };
+
+  const filteredCardIds = column.cardIds.filter((id) => {
+    const card = cards[id];
+    if (!card) return false;
+    const query = searchQuery.toLowerCase();
+    return (
+      card.title.toLowerCase().includes(query) ||
+      card.content.toLowerCase().includes(query)
+    );
+  });
+
   if (editMode) {
     return (
       <div className="w-80 bg-gray-50 dark:bg-gray-600 rounded-lg p-3 flex-shrink-0">
@@ -70,7 +96,7 @@ const Column: React.FC<Props> = ({
           <input
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
-            className="flex-1 w-36  p-1 text-sm font-medium border rounded dark:bg-gray-700 dark:text-white"
+            className="flex-1 w-36 p-1 text-sm font-medium border rounded dark:bg-gray-700 dark:text-white"
             autoFocus
           />
           <button
@@ -124,7 +150,10 @@ const Column: React.FC<Props> = ({
               rows={2}
             />
             <div className="flex gap-2">
-              <button onClick={handleAdd} className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
+              <button
+                onClick={handleAdd}
+                className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+              >
                 إضافة
               </button>
               <button
@@ -155,7 +184,7 @@ const Column: React.FC<Props> = ({
     <div className="w-80 bg-gray-50 dark:bg-gray-600 rounded-lg p-3 flex-shrink-0">
       <div className="flex justify-between items-center mb-3">
         <h2 className="font-medium dark:text-white text-gray-600">
-          {column.title} ({column.cardIds.length})
+          {column.title} ({filteredCardIds.length})
         </h2>
 
         {(onDeleteColumn || onEditColumn) && (
@@ -170,7 +199,19 @@ const Column: React.FC<Props> = ({
               ⋮
             </button>
             {menuOpen && (
-              <div className="absolute left-0 mt-1 w-32 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
+              <div className="absolute left-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10 py-2">
+              
+                <div className="px-3 mb-2">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="🔍 بحث..."
+                    className="w-full px-2 py-1 text-xs border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                    onClick={(e) => e.stopPropagation()} 
+                  />
+                </div>
+
                 {onEditColumn && (
                   <button
                     onClick={(e) => {
@@ -178,11 +219,21 @@ const Column: React.FC<Props> = ({
                       setEditMode(true);
                       setMenuOpen(false);
                     }}
-                    className="w-full text-right px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-t-lg"
+                    className="w-full text-right px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     تعديل
                   </button>
                 )}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleExportToExcel();
+                    setMenuOpen(false);
+                  }}
+                  className="w-full text-right px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-70"
+                >
+                  تصدير Excel
+                </button>
                 {onDeleteColumn && (
                   <button
                     onClick={(e) => {
@@ -201,13 +252,14 @@ const Column: React.FC<Props> = ({
         )}
       </div>
 
+  
       <div
         ref={setDroppableRef}
         className={`min-h-[100px] rounded p-1 ${isOver ? "bg-blue-100 dark:bg-blue-900/30" : ""}`}
       >
-        <SortableContext items={column.cardIds} strategy={verticalListSortingStrategy}>
+        <SortableContext items={filteredCardIds} strategy={verticalListSortingStrategy}>
           <div className="space-y-2">
-            {column.cardIds.map((id) => (
+            {filteredCardIds.map((id) => (
               <Card
                 key={id}
                 id={id}
@@ -237,7 +289,10 @@ const Column: React.FC<Props> = ({
             rows={2}
           />
           <div className="flex gap-2">
-            <button onClick={handleAdd} className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
+            <button
+              onClick={handleAdd}
+              className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+            >
               إضافة
             </button>
             <button

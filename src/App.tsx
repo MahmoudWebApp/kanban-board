@@ -1,4 +1,4 @@
-// src/App.tsx
+
 import { useEffect, useState } from "react";
 import "./App.css";
 import Board from "./components/Board";
@@ -46,14 +46,14 @@ function App() {
         <h1 className="text-xl text-gray-600 dark:text-white font-medium">
           طلبات التوظيف
         </h1>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           {showAddColumn ? (
             <div className="flex gap-2">
               <input
                 value={newColumnTitle}
                 onChange={(e) => setNewColumnTitle(e.target.value)}
                 placeholder="اسم العمود الجديد"
-                className="px-3 md:w-64 w-36  py-1 text-sm border rounded dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                className="px-3 md:w-64 w-36 py-1 text-sm border rounded dark:bg-gray-800 dark:text-white dark:border-gray-600"
                 autoFocus
                 onKeyDown={(e) => e.key === "Enter" && handleAddColumn()}
               />
@@ -76,7 +76,7 @@ function App() {
           ) : (
             <button
               onClick={() => setShowAddColumn(true)}
-              className="px-3 py-2  bg-green-500 text-white text-xs rounded hover:bg-green-600 flex items-center gap-1"
+              className="px-3 py-2 bg-green-500 text-white text-xs rounded hover:bg-green-600 flex items-center gap-1"
             >
               + إضافة عمود
             </button>
