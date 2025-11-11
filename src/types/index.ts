@@ -1,18 +1,18 @@
-export type Card = {
+export interface ICard {
   id: string;
   title: string;
   content: string;
   status: string;
-};
+}
 
-export type Column = {
+export interface IColumn {
   id: string;
   title: string;
   cardIds: string[];
-};
+}
 
-export type KanbanData = {
-  cards: Record<string, Card>;
-  columns: Record<string, Column>;
+export type IKanbanData = {
+  cards: Record<string, ICard>;
+  columns: Record<string, IColumn>;
   columnOrder: string[];
 };
