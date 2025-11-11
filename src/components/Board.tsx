@@ -1,4 +1,3 @@
-// src/components/Board.tsx
 import { useState } from "react";
 import Column from "./Column";
 import {
@@ -18,7 +17,7 @@ import type {
 import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
 import type { IKanbanData } from "../types";
 
-interface BoardProps {
+interface IProps {
   data: IKanbanData;
   addCard: (columnId: string, title: string, content: string) => void;
   editCard: (cardId: string, title: string, content: string) => void;
@@ -34,7 +33,7 @@ interface BoardProps {
   editColumn: (columnId: string, title: string) => void;
 }
 
-const Board: React.FC<BoardProps> = ({
+const Board: React.FC<IProps> = ({
   data,
   addCard,
   editCard,
