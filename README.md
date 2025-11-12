@@ -1,7 +1,7 @@
 # 📋 Kanban Board
 
 An interactive Kanban board for managing tasks and workflows (e.g., job applications), fully supporting **RTL layout**, **dark mode**, **drag-and-drop**, and **Excel import/export**.  
-Built with **React 18+**, **TypeScript**, and **Vite**, using **`@dnd-kit`** for drag-and-drop and **`xlsx`** for Excel operations.
+Built with **React 19+**, **TypeScript**, and **Vite**, using **`@dnd-kit`** for drag-and-drop and **`xlsx`** for Excel operations.
 
 ---
 
